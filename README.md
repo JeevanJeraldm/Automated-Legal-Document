@@ -259,19 +259,14 @@ The `screenshots/` directory contains generated terminal execution artifacts for
 
 ---
 
-## 🔗 GitHub Submission Checklist
-To submit this lab experiment to GitHub:
-1. Initialize git in this directory:
-   ```bash
-   git init
-   git add .
-   git commit -m "Complete Experiment 5: Automated Legal Document Analyzer using GPT-4"
-   ```
-2. Create a new GitHub repository (e.g., `legal-document-analyzer-gpt4`).
-3. Link and push your repository:
-   ```bash
-   git branch -M main
-   git remote add origin https://github.com/<your-username>/legal-document-analyzer-gpt4.git
-   git push -u origin main
-   ```
-4. Copy the repository link and attach it to your lab submission portal!
+## 🔗 GitHub Repository
+- **Repository URL**: [https://github.com/JeevanJeraldm/Automated-Legal-Document](https://github.com/JeevanJeraldm/Automated-Legal-Document)
+- **Author**: Jeevan Jerald ([@JeevanJeraldm](https://github.com/JeevanJeraldm))
+- **Experiment**: Experiment 5 – Automated Legal Document Analyzer using GPT-4
+
+### Git Push Commands
+```bash
+git branch -M main
+git remote add origin https://github.com/JeevanJeraldm/Automated-Legal-Document.git
+git push -u origin main
+```
