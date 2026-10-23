@@ -1,0 +1,36 @@
+MUTUAL NON-DISCLOSURE AGREEMENT
+
+This Mutual Non-Disclosure Agreement ("Agreement") is made and entered into as of March 1, 2024 ("Effective Date"), by and between:
+
+Apex Innovations Corp., with its registered office at 120 Technology Drive, Boston, MA 02110 ("Party A"),
+AND
+Quantum Dynamics Ltd., with its registered office at 45 Silicon Parkway, Austin, TX 78701 ("Party B").
+
+1. PURPOSE
+The Parties wish to explore potential business collaboration and joint intellectual property development regarding quantum computing algorithms (the "Permitted Purpose").
+
+2. DURATION
+This Agreement shall govern disclosures made for a period of two (2) years from the Effective Date. The confidentiality obligations set forth herein shall survive termination for five (5) years from disclosure date.
+
+3. CONFIDENTIAL INFORMATION
+"Confidential Information" refers to any proprietary, technical, operational, financial, or strategic data disclosed directly or indirectly by one Party ("Disclosing Party") to the other ("Receiving Party").
+
+4. OBLIGATIONS
+Each Party agrees to:
+(a) Protect Confidential Information with at least reasonable care.
+(b) Restrict disclosure solely to employees and advisors with a strict need-to-know basis.
+(c) Not copy, reverse engineer, or commercially exploit any confidential disclosures without written authorization.
+
+5. PAYMENT TERMS
+Not mentioned in the document.
+
+6. TERMINATION CONDITIONS
+Either Party may terminate further disclosures under this Agreement with fourteen (14) days written notice. Upon termination, all tangible records containing Confidential Information must be returned or certified destroyed within ten (10) business days.
+
+7. IMPORTANT DATES
+- Effective Date: March 1, 2024
+- Disclosure Period Expiration: February 28, 2026
+- Survival of Confidentiality: Until March 1, 2031
+
+8. GOVERNING LAW
+Governed by the laws of the Commonwealth of Massachusetts.

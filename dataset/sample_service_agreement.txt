@@ -1,0 +1,58 @@
+MASTER SERVICES AGREEMENT
+
+This Master Services Agreement ("Agreement") is entered into and made effective as of January 15, 2024 ("Effective Date"), by and between:
+
+ABC Technologies Inc., a corporation organized and existing under the laws of Delaware, with its principal office located at 100 Innovation Way, Suite 400, San Jose, CA 95134 ("Service Provider"), 
+AND
+XYZ Solutions LLC, a limited liability company organized under the laws of California, with its principal office located at 500 Market Street, 12th Floor, San Francisco, CA 94105 ("Client").
+
+Service Provider and Client may individually be referred to as a "Party" and collectively as the "Parties."
+
+1. PURPOSE AND SCOPE OF SERVICES
+The agreement defines the terms under which software development services will be provided. Service Provider shall provide comprehensive custom software engineering, cloud infrastructure architecture, and technical support services to Client as described in Statement of Work #1 attached hereto.
+
+2. DURATION AND TERM
+This Agreement shall commence on the Effective Date and shall remain in full force and effect for a period of 12 months, expiring on January 14, 2025, unless earlier terminated in accordance with the provisions hereof.
+
+3. OBLIGATIONS OF THE PARTIES
+3.1 Service Provider Obligations:
+- Deliver sprint-based software development milestones every two weeks.
+- Provide qualified engineering personnel dedicated to the project.
+- Perform continuous integration, automated testing, and code quality reviews.
+- Maintain source code repositories with proper documentation.
+
+3.2 Client Obligations:
+- Provide timely access to specifications, third-party API credentials, and development environments.
+- Review and approve or provide feedback on deliverables within five (5) business days of submission.
+- Designate a qualified Project Manager as the primary point of contact.
+
+4. PAYMENT TERMS AND COMPENSATION
+4.1 Professional Fees: Client shall pay Service Provider a fixed monthly fee of $25,000 USD for dedicated software development team resources.
+4.2 Invoicing Schedule: Invoices shall be issued on the first business day of each calendar month.
+4.3 Payment Due Date: Payment shall be due net thirty (30) days from the date of invoice receipt.
+4.4 Late Fees: Any unpaid balances past the due date shall accrue interest at a rate of 1.5% per month or the maximum rate permitted by law.
+
+5. CONFIDENTIALITY
+Each Party agrees to hold in strict confidence all proprietary technical, financial, and business information disclosed by the other Party during the term of this Agreement. Neither Party shall disclose such confidential information to any third party without prior written consent. This confidentiality obligation shall survive the expiration or termination of this Agreement for five (5) years.
+
+6. TERMINATION CONDITIONS
+6.1 Termination for Convenience: Either Party may terminate this Agreement without cause upon giving thirty (30) days prior written notice to the other Party.
+6.2 Termination for Cause: Either Party may terminate this Agreement immediately upon written notice if the other Party commits a material breach and fails to cure such breach within fifteen (15) days of receiving written notice thereof.
+6.3 Insolvency: Either Party may terminate immediately if the other Party becomes insolvent, files for bankruptcy, or ceases ordinary business operations.
+
+7. IMPORTANT DATES
+- Effective Date: January 15, 2024
+- Milestone 1 Delivery Date: March 31, 2024
+- Mid-Term Project Review Date: July 15, 2024
+- Expiration Date: January 14, 2025
+
+8. GOVERNING LAW AND DISPUTE RESOLUTION
+This Agreement shall be governed by and construed in accordance with the laws of the State of California, without regard to its conflict of law principles. Any dispute arising out of or related to this Agreement shall be resolved through binding arbitration in San Francisco, California.
+
+IN WITNESS WHEREOF, the Parties have executed this Master Services Agreement as of the date first written above.
+
+ABC Technologies Inc.                        XYZ Solutions LLC
+By: ___________________________              By: ___________________________
+Name: Johnathan Davis                        Name: Sarah Jenkins
+Title: Chief Technology Officer              Title: Vice President of Operations
+Date: January 15, 2024                       Date: January 15, 2024

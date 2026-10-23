@@ -1,0 +1,30 @@
+ENTERPRISE SOFTWARE LICENSE AND SAAS SUBSCRIPTION AGREEMENT
+
+This Software License Agreement ("Agreement") is made effective as of February 1, 2024 ("Effective Date"), by and between:
+
+CloudScale Systems Inc., a Delaware corporation with offices at 700 Tech Boulevard, Austin, TX 78701 ("Licensor"),
+AND
+Enterprise Logistics Group, an Ohio corporation with offices at 1200 Commerce Way, Columbus, OH 43215 ("Licensee").
+
+1. PURPOSE AND GRANT OF LICENSE
+The agreement defines the terms under which proprietary logistics optimization software and cloud-hosted SaaS solutions will be licensed and delivered. Licensor grants Licensee a non-exclusive, non-transferable, revocable subscription license to access the CloudScale Platform.
+
+2. DURATION
+The initial term shall be twenty-four (24) months from the Effective Date, automatically renewing for successive 12-month periods unless written notice of non-renewal is provided at least sixty (60) days prior to expiration.
+
+3. OBLIGATIONS
+Licensor shall maintain 99.9% uptime availability, provide enterprise security patches, and respond to critical support tickets within two (2) hours. Licensee shall not reverse-engineer, sublicense, or permit unauthorized third parties to access user seats.
+
+4. PAYMENT TERMS
+Licensee agrees to pay an annual subscription fee of $48,000 USD, billed annually in advance. Invoices are payable within thirty (30) days of receipt.
+
+5. TERMINATION CONDITIONS
+Either party may terminate immediately for uncured material breach upon thirty (30) days notice. Upon termination, Licensee access is terminated and client data is returned within thirty (30) days.
+
+6. IMPORTANT DATES
+- Effective Date: February 1, 2024
+- Initial Term Expiration: January 31, 2026
+- Annual Payment Due: February 1 of each operating year
+
+7. CONFIDENTIALITY
+Both parties agree to treat all code, business metrics, and architecture diagrams as confidential for a period of three (3) years post termination.
