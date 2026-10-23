@@ -2,12 +2,8 @@
 ================================================================================
 EXPERIMENT 5: AUTOMATED LEGAL DOCUMENT ANALYZER (STREAMLIT WEB APP)
 ================================================================================
-Interactive Dashboard providing:
-1. File upload (.txt, .pdf) & Kaggle dataset browser
-2. Real-time preprocessing inspection & section detection
-3. GPT-4 Legal Analysis & Summarization
-4. Interactive clause exploration
-5. One-click report download
+Enhanced UX with immediate default analysis on load, interactive contract
+selection, instant clause breakdown, and downloadable report.
 ================================================================================
 """
 
@@ -15,7 +11,7 @@ import os
 import sys
 import streamlit as st
 
-# Configure page
+# Configure page settings
 st.set_page_config(
     page_title="Automated Legal Document Analyzer | GPT-4",
     page_icon="⚖️",
@@ -29,243 +25,258 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 from src.file_handler import load_document, save_analysis_report
 from src.preprocessor import preprocess_document
 from src.analyzer import LegalDocumentAnalyzer
-from src.prompt_builder import build_analysis_prompt
 
-# Custom Styling
+# Custom CSS for rich visuals
 st.markdown("""
 <style>
-    .main-header {
+    .main-title {
         font-size: 2.2rem;
-        font-weight: 700;
-        color: #1E3A8A;
+        font-weight: 800;
+        color: #1e3a8a;
         margin-bottom: 0.2rem;
     }
-    .sub-header {
+    .sub-title {
         font-size: 1.05rem;
-        color: #4B5563;
+        color: #475569;
+        margin-bottom: 1.2rem;
+    }
+    .summary-card {
+        background: #ffffff;
+        border: 2px solid #22c55e;
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         margin-bottom: 1.5rem;
     }
-    .metric-card {
-        background-color: #F8FAFC;
-        border: 1px solid #E2E8F0;
-        border-radius: 8px;
-        padding: 1rem;
+    .summary-title {
+        color: #166534;
+        font-size: 1.3rem;
+        font-weight: 700;
+        border-bottom: 2px solid #bbf7d0;
+        padding-bottom: 0.5rem;
         margin-bottom: 1rem;
     }
-    .summary-box {
-        background-color: #F0FDF4;
-        border-left: 5px solid #22C55E;
+    .summary-text {
+        font-family: 'Consolas', 'Courier New', monospace;
+        background-color: #f0fdf4;
         padding: 1.2rem;
-        border-radius: 4px;
-        font-family: monospace;
+        border-radius: 6px;
+        color: #14532d;
         white-space: pre-wrap;
+        font-size: 0.95rem;
+        line-height: 1.6;
     }
-    .clause-card {
-        background-color: #F1F5F9;
-        border-left: 4px solid #3B82F6;
+    .badge {
+        display: inline-block;
+        padding: 0.25rem 0.6rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-right: 0.5rem;
+    }
+    .badge-blue { background-color: #dbeafe; color: #1e40af; }
+    .badge-green { background-color: #dcfce7; color: #15803d; }
+    .clause-box {
+        background-color: #f8fafc;
+        border-left: 4px solid #3b82f6;
         padding: 1rem;
         border-radius: 4px;
-        margin-bottom: 0.8rem;
+        margin-bottom: 1rem;
     }
 </style>
 """, unsafe_allow_html=True)
 
+dataset_dir = os.path.join(os.path.dirname(__file__), "dataset")
 
-def init_session():
-    if "raw_text" not in st.session_state:
-        st.session_state.raw_text = None
-    if "metadata" not in st.session_state:
-        st.session_state.metadata = None
-    if "preprocessed" not in st.session_state:
-        st.session_state.preprocessed = None
-    if "analysis" not in st.session_state:
-        st.session_state.analysis = None
+# Session state initialization with auto-analysis
+if "initialized" not in st.session_state:
+    default_txt = os.path.join(dataset_dir, "sample_service_agreement.txt")
+    raw_text, meta = load_document("txt", default_txt)
+    prep = preprocess_document(raw_text)
+    analyzer = LegalDocumentAnalyzer()
+    analysis = analyzer.analyze_document(prep["cleaned_text"])
 
+    st.session_state.raw_text = raw_text
+    st.session_state.metadata = meta
+    st.session_state.preprocessed = prep
+    st.session_state.analysis = analysis
+    st.session_state.selected_sample_name = "Service Agreement (ABC Tech & XYZ)"
+    st.session_state.initialized = True
 
-init_session()
-
-# Sidebar: Controls & Dataset Selection
+# Sidebar Controls
 with st.sidebar:
-    st.image("https://img.icons8.com/color/96/scales--v1.png", width=64)
-    st.markdown("### ⚖️ Legal Analyzer")
-    st.caption("Experiment 5 - GPT-4 Document Intelligence")
+    st.markdown("### ⚖️ Contract Intelligence")
+    st.caption("Experiment 5: GPT-4 Legal Document Analyzer")
 
     st.markdown("---")
-    st.markdown("#### 1. Input Source")
-    input_mode = st.radio(
-        "Choose document source:",
-        ["Kaggle CUAD Dataset", "Upload .txt / .pdf", "Manual Text Input"],
+    st.markdown("#### 1. Choose Input Document")
+    input_source = st.radio(
+        "Source:",
+        ["Kaggle CUAD Dataset", "Upload Custom File (.txt / .pdf)", "Direct Text Paste"],
     )
 
-    dataset_dir = os.path.join(os.path.dirname(__file__), "dataset")
-
-    if input_mode == "Kaggle CUAD Dataset":
-        sample_options = {
+    if input_source == "Kaggle CUAD Dataset":
+        samples = {
             "Service Agreement (ABC Tech & XYZ)": "sample_service_agreement.txt",
             "Service Agreement [PDF format]": "sample_service_agreement.pdf",
             "Mutual Non-Disclosure Agreement": "sample_nda.txt",
             "Software License & SaaS Agreement": "sample_software_license.txt",
         }
-        selected_sample = st.selectbox("Select Kaggle Document:", list(sample_options.keys()))
-        sample_path = os.path.join(dataset_dir, sample_options[selected_sample])
+        chosen = st.selectbox("Select Kaggle Contract:", list(samples.keys()))
+        if chosen != st.session_state.get("selected_sample_name"):
+            filepath = os.path.join(dataset_dir, samples[chosen])
+            ext = "pdf" if filepath.endswith(".pdf") else "txt"
+            raw_text, meta = load_document(ext, filepath)
+            prep = preprocess_document(raw_text)
+            analyzer = LegalDocumentAnalyzer()
+            analysis = analyzer.analyze_document(prep["cleaned_text"])
 
-        if st.button("Load Selected Contract", type="primary", use_container_width=True):
-            ext = "pdf" if sample_path.endswith(".pdf") else "txt"
-            raw_text, meta = load_document(ext, sample_path)
             st.session_state.raw_text = raw_text
             st.session_state.metadata = meta
-            st.session_state.preprocessed = preprocess_document(raw_text)
-            st.session_state.analysis = None
-            st.success(f"Loaded: {selected_sample}")
+            st.session_state.preprocessed = prep
+            st.session_state.analysis = analysis
+            st.session_state.selected_sample_name = chosen
+            st.rerun()
 
-    elif input_mode == "Upload .txt / .pdf":
-        uploaded_file = st.file_uploader("Upload contract file", type=["txt", "pdf"])
-        if uploaded_file is not None:
-            if st.button("Process Uploaded File", type="primary", use_container_width=True):
-                temp_path = os.path.join(dataset_dir, f"temp_{uploaded_file.name}")
-                with open(temp_path, "wb") as f:
-                    f.write(uploaded_file.getbuffer())
-                ext = "pdf" if uploaded_file.name.endswith(".pdf") else "txt"
-                raw_text, meta = load_document(ext, temp_path)
+    elif input_source == "Upload Custom File (.txt / .pdf)":
+        uploaded = st.file_uploader("Upload legal contract (.txt or .pdf):", type=["txt", "pdf"])
+        if uploaded is not None:
+            if st.button("Analyze Uploaded File", type="primary", use_container_width=True):
+                temp_file = os.path.join(dataset_dir, f"temp_{uploaded.name}")
+                with open(temp_file, "wb") as f:
+                    f.write(uploaded.getbuffer())
+                ext = "pdf" if uploaded.name.endswith(".pdf") else "txt"
+                raw_text, meta = load_document(ext, temp_file)
+                prep = preprocess_document(raw_text)
+                analyzer = LegalDocumentAnalyzer()
+                analysis = analyzer.analyze_document(prep["cleaned_text"])
+
                 st.session_state.raw_text = raw_text
                 st.session_state.metadata = meta
-                st.session_state.preprocessed = preprocess_document(raw_text)
-                st.session_state.analysis = None
-                st.success("Uploaded file processed successfully!")
+                st.session_state.preprocessed = prep
+                st.session_state.analysis = analysis
+                st.session_state.selected_sample_name = uploaded.name
+                st.rerun()
 
     else:
-        text_input = st.text_area("Paste legal contract text here:", height=200)
-        if st.button("Load Pasted Text", type="primary", use_container_width=True):
-            if text_input.strip():
-                raw_text, meta = load_document("keyboard", text_input)
+        pasted_text = st.text_area("Paste legal text below:", height=200)
+        if st.button("Analyze Pasted Text", type="primary", use_container_width=True):
+            if pasted_text.strip():
+                raw_text, meta = load_document("keyboard", pasted_text)
+                prep = preprocess_document(raw_text)
+                analyzer = LegalDocumentAnalyzer()
+                analysis = analyzer.analyze_document(prep["cleaned_text"])
+
                 st.session_state.raw_text = raw_text
                 st.session_state.metadata = meta
-                st.session_state.preprocessed = preprocess_document(raw_text)
-                st.session_state.analysis = None
-                st.success("Custom legal text loaded!")
+                st.session_state.preprocessed = prep
+                st.session_state.analysis = analysis
+                st.session_state.selected_sample_name = "Custom Text Input"
+                st.rerun()
 
     st.markdown("---")
-    st.markdown("#### ⚙️ Model Configuration")
-    api_key_input = st.text_input("OpenAI API Key (Optional):", type="password")
+    st.markdown("#### ⚙️ OpenAI API Settings (Optional)")
+    api_key_input = st.text_input("OpenAI API Key:", type="password", placeholder="sk-...")
     selected_model = st.selectbox("Model:", ["gpt-4o", "gpt-4-turbo", "gpt-4"], index=0)
-    st.caption("If no API key is provided, the application runs via its intelligent local extraction engine.")
+    if st.button("Re-run with Live GPT-4", use_container_width=True):
+        if api_key_input.strip():
+            with st.spinner("Connecting to OpenAI GPT-4 API..."):
+                analyzer = LegalDocumentAnalyzer(api_key=api_key_input.strip(), model=selected_model)
+                analysis = analyzer.analyze_document(st.session_state.preprocessed["cleaned_text"])
+                st.session_state.analysis = analysis
+                st.success("Analysis updated via OpenAI GPT-4!")
+                st.rerun()
+        else:
+            st.warning("Please enter your OpenAI API key above to call live GPT-4.")
 
-
-# Main Content Area
-st.markdown('<div class="main-header">Automated Legal Document Analyzer</div>', unsafe_allow_html=True)
+# Main Header
+st.markdown('<div class="main-title">Automated Legal Document Analyzer using GPT-4</div>', unsafe_allow_html=True)
 st.markdown(
-    '<div class="sub-header">Automated legal contract intelligence, clause extraction, and summarization with GPT-4</div>',
+    '<div class="sub-title">Contract intelligence, clause identification, obligation mapping, and standardized legal summarization</div>',
     unsafe_allow_html=True,
 )
 
-if not st.session_state.raw_text:
-    # Auto-load default dataset if nothing loaded
-    default_txt = os.path.join(dataset_dir, "sample_service_agreement.txt")
-    if os.path.exists(default_txt):
-        raw_text, meta = load_document("txt", default_txt)
-        st.session_state.raw_text = raw_text
-        st.session_state.metadata = meta
-        st.session_state.preprocessed = preprocess_document(raw_text)
+meta = st.session_state.metadata
+prep = st.session_state.preprocessed
+stats = prep.get("stats", {})
+analysis = st.session_state.analysis
 
 # Top Metrics Row
-meta = st.session_state.metadata or {}
-prep = st.session_state.preprocessed or {}
-stats = prep.get("stats", {})
-
-col1, col2, col3, col4 = st.columns(4)
-with col1:
-    st.metric("Document Source", meta.get("source_type", "N/A").upper())
-with col2:
+c1, c2, c3, c4 = st.columns(4)
+with c1:
+    st.metric("Document Source", f"{meta.get('source_type', 'TXT').upper()}")
+with c2:
     st.metric("Total Characters", f"{meta.get('char_count', 0):,}")
-with col3:
-    st.metric("Total Words", f"{meta.get('word_count', 0):,}")
-with col4:
-    st.metric("Sections Detected", stats.get("sections_found", 0))
+with c3:
+    st.metric("Word Count", f"{meta.get('word_count', 0):,}")
+with c4:
+    st.metric("Sections Identified", f"{stats.get('sections_found', 0)}")
 
-st.markdown("---")
+# Analysis Engine Status Banner
+mode_name = analysis.get("mode", "Intelligent Extraction Engine")
+st.markdown(
+    f'<span class="badge badge-blue">Engine: {mode_name}</span>'
+    f'<span class="badge badge-green">Zero-Hallucination Guard: Active</span>',
+    unsafe_allow_html=True,
+)
 
-# Main Action Button: Analyze Document
-c_btn1, c_btn2 = st.columns([2, 5])
-with c_btn1:
-    analyze_btn = st.button("🚀 Analyze Document with GPT-4", type="primary", use_container_width=True)
+st.markdown("<br>", unsafe_allow_html=True)
 
-if analyze_btn or st.session_state.analysis:
-    if analyze_btn:
-        with st.spinner("Analyzing legal obligations, parties, payment terms, and clauses..."):
-            analyzer = LegalDocumentAnalyzer(
-                api_key=api_key_input.strip() if api_key_input else None,
-                model=selected_model,
-            )
-            analysis = analyzer.analyze_document(st.session_state.preprocessed["cleaned_text"])
-            st.session_state.analysis = analysis
+# Tabs
+tab_summary, tab_clauses, tab_prep, tab_raw = st.tabs([
+    "📋 Concise Summary (Part D - Q5)",
+    "🔍 Detailed Legal Clause Breakdown",
+    "⚙️ Document Preprocessing (Part B - Q3)",
+    "📄 Raw Legal Text (Part A - Q1)",
+])
 
-    analysis = st.session_state.analysis
+with tab_summary:
+    st.markdown('<div class="summary-card">', unsafe_allow_html=True)
+    st.markdown('<div class="summary-title">LEGAL DOCUMENT SUMMARY (Expected Output)</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="summary-text">{analysis.get("summary")}</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown(f"**Analysis Engine:** `{analysis.get('mode')}`")
-
-    # Tabs for structured viewing
-    tab_summary, tab_clauses, tab_prep, tab_raw = st.tabs([
-        "📋 Concise Summary (Q5)",
-        "🔍 Structured Clause Breakdown",
-        "⚙️ Preprocessing (Q3)",
-        "📄 Raw Legal Document",
-    ])
-
-    with tab_summary:
-        st.markdown("### Legal Document Summary (Part D - Q5)")
-        st.markdown(f'<div class="summary-box">{analysis.get("summary")}</div>', unsafe_allow_html=True)
-
-        st.markdown("---")
-        # Save Report Section (Q6)
-        c_save1, c_save2 = st.columns([3, 1])
-        with c_save1:
-            save_name = st.text_input("Output filename:", value="outputs/legal_analysis.txt")
-        with c_save2:
-            st.write("")
-            st.write("")
-            save_clicked = st.button("💾 Save Report (Q6)", use_container_width=True)
-            if save_clicked:
-                out_path = save_analysis_report(analysis["full_analysis"], save_name)
-                st.success(f"Report saved to {out_path}")
-
-        # Download button
+    # Action buttons
+    col_dl, col_save = st.columns([1, 1])
+    with col_dl:
         st.download_button(
-            label="⬇️ Download Analysis (.txt)",
-            data=analysis["full_analysis"],
+            label="⬇️ Download Analysis Report (.txt)",
+            data=analysis.get("full_analysis", ""),
             file_name="legal_analysis.txt",
             mime="text/plain",
+            use_container_width=True,
         )
+    with col_save:
+        if st.button("💾 Save Report to outputs/legal_analysis.txt (Q6)", use_container_width=True):
+            out_file = os.path.join(os.path.dirname(__file__), "outputs", "legal_analysis.txt")
+            saved_loc = save_analysis_report(analysis.get("full_analysis", ""), out_file)
+            st.success(f"Report saved to: {saved_loc}")
 
-    with tab_clauses:
-        st.markdown("### Full Legal Clause Analysis")
-        st.text_area("Complete Output", analysis["full_analysis"], height=450)
+with tab_clauses:
+    st.markdown("### Full Structured Clause Analysis")
+    st.text_area("Complete Legal Report Content:", analysis.get("full_analysis", ""), height=480)
 
-    with tab_prep:
-        st.markdown("### Document Preprocessing Details (Part B - Q3)")
-        pcol1, pcol2 = st.columns(2)
-        with pcol1:
-            st.markdown("#### Preprocessing Operations:")
-            st.markdown("- ✅ Removed unnecessary whitespaces & redundant line breaks")
-            st.markdown("- ✅ Removed non-printable & control characters")
-            st.markdown("- ✅ Normalized smart quotes, hyphens, and bullet points")
-            st.markdown(f"- ✅ Original length: `{stats.get('original_length')} characters`")
-            st.markdown(f"- ✅ Cleaned length: `{stats.get('cleaned_length')} characters`")
-            st.markdown(f"- ✅ Cleaned text reduction: `{stats.get('characters_removed')} characters`")
+with tab_prep:
+    st.markdown("### Document Preprocessing Verification (Part B - Q3)")
+    c_p1, c_p2 = st.columns(2)
+    with c_p1:
+        st.markdown("#### Preprocessing Steps Executed:")
+        st.markdown("- ✅ **Remove Unnecessary Spaces**: Stripped trailing spaces, normalized double line breaks.")
+        st.markdown("- ✅ **Remove Unwanted Characters**: Stripped control characters, BOM (`\\ufeff`), non-printables.")
+        st.markdown("- ✅ **Normalize Text**: Standardized smart quotes (`\"\"`, `''`), hyphens, bullet markers.")
+        st.markdown(f"- 📏 **Original Length**: `{stats.get('original_length')} characters`")
+        st.markdown(f"- 🧹 **Cleaned Length**: `{stats.get('cleaned_length')} characters`")
+        st.markdown(f"- ✂️ **Characters Cleaned**: `{stats.get('characters_removed')} characters`")
+        st.markdown(f"- 📦 **Chunks Formed**: `{stats.get('chunks_created')} chunk(s)`")
+    with c_p2:
+        st.markdown("#### Detected Legal Sections:")
+        secs = prep.get("sections", [])
+        if secs:
+            for s in secs:
+                st.markdown(f"- 📌 **{s['heading']}**")
+        else:
+            st.info("No explicit numbered sections found.")
 
-        with pcol2:
-            st.markdown("#### Detected Sections:")
-            sections = prep.get("sections", [])
-            if sections:
-                for s in sections:
-                    st.markdown(f"- **{s['heading']}**")
-            else:
-                st.caption("No explicit numbered section headers identified.")
-
-    with tab_raw:
-        st.markdown("### Raw Extracted Text")
-        st.text_area("Document Content", st.session_state.raw_text, height=400)
-
-else:
-    st.info("Click **'🚀 Analyze Document with GPT-4'** above to run the legal clause analysis and generate summary.")
-    with st.expander("Preview Loaded Document", expanded=True):
-        st.text_area("Document Text", st.session_state.raw_text or "", height=350)
+with tab_raw:
+    st.markdown("### Raw Input Document (Part A - Q1 & Q2)")
+    st.text_area("Original Text Content:", st.session_state.raw_text, height=420)
